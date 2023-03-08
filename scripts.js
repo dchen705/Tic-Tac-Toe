@@ -3,20 +3,6 @@ const spaces = document.querySelectorAll(".tictactoe-board>div");
 let turn_counter = 1;
 
 
-function mark_space(space_num) {
-    console.log(space_num);
-    let space_text = space_num.querySelector('p');
-    if (turn_counter % 2 == 1) {
-        space_text.textContent="X";
-    }
-    else if (turn_counter % 2 == 0) {
-        space_text.textContent="O";
-    }
-    console.log(turn_counter);
-    turn_counter += 1;
-    
-}
-
 const gameboardModule = (function() {
     const space_values = ["","","","","","","","",""];
     return {space_values};
@@ -41,4 +27,116 @@ const gameController = (function() {
             });   
         });
     });
+    function mark_space(space_num) {
+    console.log(space_num);
+    let space_text = space_num.querySelector('p');
+    if (turn_counter % 2 == 1) {
+        space_text.textContent="X";
+        check_wins(space_num);
+        if (turn_counter == 9) {
+          alert("tie!");
+          clear_board();
+        }
+    }
+    else if (turn_counter % 2 == 0) {
+        space_text.textContent="O";
+        check_wins(space_num);
+        if (turn_counter == 9) {
+            alert("tie!");
+            clear_board();
+          }
+    }
+    console.log(turn_counter);
+    turn_counter += 1;
+    
+}
+
+function check_wins(space_num) {
+    let row_values = [];
+    let col_values = [];
+    let diagonals = get_diagonals();
+    let diagonal1 = diagonals.diagonal1;
+    let diagonal2 = diagonals.diagonal2;
+    let this_row = space_num.classList.item(1);
+    let this_col = space_num.classList.item(2);
+    let row_spaces_to_check = document.querySelectorAll("." + this_row);
+    row_spaces_to_check.forEach(space => {
+      row_values.push(space.textContent);
+    });
+    let col_spaces_to_check = document.querySelectorAll("." + this_col);
+  col_spaces_to_check.forEach(space => {
+      col_values.push(space.textContent);
+    });
+  if (row_values.every(value => 
+    value == "X"
+  )) {
+    alert("Player 1 wins");
+  }
+  else if (row_values.every(value => 
+    value == "O"
+  )) {
+    alert("Player 2 wins");
+  }
+  else if (col_values.every(value => 
+    value == "X"
+  )) {
+    alert("Player 1 wins");
+  }
+  else if (col_values.every(value => 
+    value == "O"
+  )) {
+    alert("Player 2 wins");
+  }
+  else if (diagonal1.every(value =>
+    value == "X")) {
+    alert("Player 1 wins");
+    }
+  else if (diagonal1.every(value =>
+    value == "O")) {
+    alert("Player 2 wins");
+    }
+  else if (diagonal2.every(value =>
+    value == "X")) {
+    alert("Player 1 wins");
+    }
+  else if (diagonal2.every(value =>
+    value == "O")) {
+    alert("Player 2 wins");
+    }
+}
+
+function get_diagonals() {
+  let diagonal1_positions = [".row1.col1 p",".row2.col2 p",".row3.col3 p"];
+  let diagonal2_positions = [".row1.col3 p",".row2.col2 p",".row3.col1 p"];
+  let diagonal1_marks = [];
+  let diagonal2_marks = [];
+  
+  diagonal1_positions.forEach(position => {
+    let this_space = document.querySelector(position);
+    let this_mark = this_space.textContent;
+    diagonal1_marks.push(this_mark);
+  })
+  
+  diagonal2_positions.forEach(position => {
+    let this_space = document.querySelector(position);
+    let this_mark = this_space.textContent;
+    diagonal2_marks.push(this_mark);
+  })
+
+  return {
+    diagonal1: diagonal1_marks,
+    diagonal2: diagonal2_marks
+  };
+}
+
+function clear_board() {
+  let all_spaces = gameboard.querySelectorAll("p");
+  all_spaces.forEach(space => {
+    space.textContent = "";
+  })
+  turn_counter = 1;
+}
 })();
+
+
+
