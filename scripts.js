@@ -4,8 +4,64 @@ let turn_counter = 1;
 
 
 const gameboardModule = (function() {
-    const space_values = ["","","","","","","","",""];
-    return {space_values};
+   const reset_btn = document.querySelector(".reset_button");
+    reset_btn.addEventListener("click", clear_board);
+  
+    const start_btn = document.querySelector(".start_button");
+    let space = "dummy_value"
+    let clickHandler = createClickHandler(space);
+    start_btn.addEventListener("click", () => {
+        gameboard.style.backgroundColor = "white";
+        turn_counter = 1;
+        spaces.forEach(function(space) {
+          clickHandler = createClickHandler(space);
+          space.addEventListener("click", clickHandler); 
+          
+        });
+    });
+
+  function createClickHandler(space) {
+    return function() {
+        mark_space(space);
+    }
+  } 
+  
+    function mark_space(space_num) {
+    
+    let space_text = space_num.querySelector('p');
+    if (space_text.textContent != "") {
+        space.removeEventListener("click", clickHandler);
+        return
+    }
+    if (turn_counter % 2 == 1) {
+        space_text.textContent="X";
+        gameController.check_wins(space_num);
+        if (turn_counter == 9) {
+          alert("tie!");
+          clear_board();
+        }
+    }
+    else if (turn_counter % 2 == 0) {
+        space_text.textContent="O";
+        gameController.check_wins(space_num);
+        if (turn_counter == 9) {
+            alert("tie!");
+            clear_board();
+          }
+
+    }
+    console.log(turn_counter);
+    turn_counter += 1;   
+}
+  
+function clear_board() {
+  let all_spaces = gameboard.querySelectorAll("p");
+  all_spaces.forEach(space => {
+    space.textContent = "";
+  })
+  turn_counter = 1;
+}
+  
 })();
 
 const Player = (name) => {
@@ -17,40 +73,7 @@ const displayController = (function() {
 })();
 
 const gameController = (function() {
-    const start_btn = document.querySelector(".start_button");
-    start_btn.addEventListener("click", () => {
-        gameboard.style.backgroundColor = "white";
-        turn_counter = 1;
-        spaces.forEach(function(space) {
-            space.addEventListener("click", function(event) {
-                mark_space(space);
-            });   
-        });
-    });
-    function mark_space(space_num) {
-    console.log(space_num);
-    let space_text = space_num.querySelector('p');
-    if (turn_counter % 2 == 1) {
-        space_text.textContent="X";
-        check_wins(space_num);
-        if (turn_counter == 9) {
-          alert("tie!");
-          clear_board();
-        }
-    }
-    else if (turn_counter % 2 == 0) {
-        space_text.textContent="O";
-        check_wins(space_num);
-        if (turn_counter == 9) {
-            alert("tie!");
-            clear_board();
-          }
-    }
-    console.log(turn_counter);
-    turn_counter += 1;
-    
-}
-
+  
 function check_wins(space_num) {
     let row_values = [];
     let col_values = [];
@@ -129,14 +152,9 @@ function get_diagonals() {
   };
 }
 
-function clear_board() {
-  let all_spaces = gameboard.querySelectorAll("p");
-  all_spaces.forEach(space => {
-    space.textContent = "";
-  })
-  turn_counter = 1;
+return {
+  check_wins: check_wins,
+  get_diagonals: get_diagonals
 }
+
 })();
-
-
-
