@@ -11,9 +11,9 @@ const gameboardModule = (function() {
     let space = "dummy_value"
     let clickHandler = createClickHandler(space);
     start_btn.addEventListener("click", () => {
-        gameboard.style.backgroundColor = "white";
         turn_counter = 1;
         spaces.forEach(function(space) {
+          space.style.backgroundColor = "#99e6ff";
           clickHandler = createClickHandler(space);
           space.addEventListener("click", clickHandler); 
           
